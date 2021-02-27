@@ -18,6 +18,9 @@ def home():
     new_problems = get_structure()
     new_added_problems = update_problems(loads(current_user.problems), new_problems)
     added_problems = merge_added_problems(current_user, new_added_problems, new_problems)
+
+    current_user.update_time = datetime.now()
+    db.session.commit()
     
     update_time_str = datetime.strftime(current_user.update_time, '%d %b в %H:%M:%S, %Y год')
     

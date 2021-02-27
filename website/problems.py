@@ -1,12 +1,10 @@
 from json import loads, dumps
 from bs4 import Tag
 import re
-from datetime import datetime
 import jmespath as jmp
 import numpy as np
 from flask_login import UserMixin
 
-from . import db
 from .parser import get_catalog, get_problems
 
 
@@ -123,7 +121,5 @@ def merge_added_problems(user: UserMixin, new_added_problems: list, new_structur
         kwargs = dict(indent=2, ensure_ascii=False)
         user.added_problems = dumps(added_problems, **kwargs)
         user.problems = dumps(new_structure, **kwargs)
-        user.update_time = datetime.now()
-        db.session.commit()
 
     return added_problems
