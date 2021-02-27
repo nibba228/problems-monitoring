@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Просмотренные задания{% endblock %}
+
+{% block content %}
+    <h1 align="center">Просмотренные задания</h1>
+    <br>
+    {% if any_seen %}
+        {% for topic_name, problems in seen_problems.items() %}
+            {% if problems %}
+                <div>
+                    <p><strong>{{ topic_name }}</strong></p>
+                    {% for problem in problems %}
+                        <a href="{{ url }}problem?id={{ problem }}">{{ problem }}</a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <h6 align="center">Пока что вы не просмотрели ни одного задания</h6>
+    {% endif %}
+{% endblock %}

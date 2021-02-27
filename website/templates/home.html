@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+    <h1 align="center">Новые задания</h1>
+    <br>
+    <p>Обновлено {{ update_time }}</p>
+    {% if any_problems %}
+        {% for topic, problems in topics|zip(all_problems) %}
+            <div>
+                {% if topic['count'] - seen_problems[topic['name']]|length > 0 %}
+                    <strong>{{ topic['name'] }} <span class="positive">+{{ topic['count'] - seen_problems[topic['name']]|length }}</span></strong>
+                {% else %}
+                    <strong>{{ topic['name'] }}</strong>
+                {% endif %}
+                {% if problems %}
+                    <br>
+                    {% for problem in problems %}
+                        {% if problem['id'] not in seen_problems[topic['name']] %}
+                            <a onclick="makeSeen('{{ user.id }}', '{{ problem['id'] }}', '{{ topic['name'] }}')"
+                            href="{{ url }}{{ problem['href'] }}"
+                            target="_blank">{{ problem['id'] }}</a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <br>
+        {% endfor %}
+    {% else %}
+        <h6>Пока что новых заданий не появилось</h6>
+    {% endif %}
+{% endblock %}
