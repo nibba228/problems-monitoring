@@ -36,13 +36,27 @@ def update_problems(old_structure: list, new_structure: list) -> list:
     upd_structure = []
 
     # вытягиваем названия тем
-    topic_names = jmp.search('[*].topic.name', old_structure)
+    topic_names = jmp.search('[*].topic.name', new_structure)
 
     # считаем дельту кол-в заданий по подтемам, преобразовывая списки в списке в np.array,
     # чтобы можно было вычитать
     new_sbt_counts = np.array(list(map(np.array, jmp.search('[*].subtopics[*].count', new_structure))))
     old_sbt_counts = np.array(list(map(np.array, jmp.search('[*].subtopics[*].count', old_structure))))
-    all_subtopic_counts = new_sbt_counts - old_sbt_counts
+    
+    # аккуратно считаем разность новых и старых заданий
+    all_subtopic_counts = []
+    for new, old in zip(new_sbt_counts, old_sbt_counts):
+        try:
+            temp = new - old
+            all_subtopic_counts.append(temp)
+        except ValueError:
+            for i in range(len(old)):
+                if new[i] - old[i] < 0:
+                    old = np.insert(old, i, 0)
+            temp = new - old
+            all_subtopic_counts.append(temp)
+
+    all_subtopic_counts = np.array(all_subtopic_counts)
 
     # вытягиваем ссылки на подтемы
     subtopic_hrefs = jmp.search('[*].subtopics[*].href', new_structure)
